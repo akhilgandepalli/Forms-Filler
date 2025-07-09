@@ -12,34 +12,28 @@ import {
   Tabs,
   Container,
   Typography,
+  IconButton,
 } from "@mui/material";
 import { Start } from "@mui/icons-material";
 import StartumGapCoverClaimForm from "./Forms/StartumGapCoverClaimForm";
 import StartumGapCoverApplicationForm from "./Forms/StartumGapCoverApplicationForm";
 import DiscoveryForm2 from "./Forms/DiscoveryForm2";
 import { appContext } from "../App";
-
-// const names = [
-//   "StartumGapCoverClaimForm",
-//   "StartumGapCoverApplicationForm",
-//   "DiscoveryForm",
-// ];
-// const customerNames = ["Customer A", "Customer B", "Customer C", "Customer D"];
-// const fixedName = "Forms";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function FormsSelectMenu() {
   const [selectedNames, setSelectedNames] = useState([]);
   const [singleName, setSingleName] = useState("");
   const [selectedTab, setSelectedTab] = useState(0);
-  const { customers, currentCustomer, setCurrentCustomer } =
+  const [hoveredOption, setHoveredOption] = useState(null);
+  const { customers, setCustomers, currentCustomer, setCurrentCustomer } =
     useContext(appContext);
   const names = [
     "StartumGapCoverClaimForm",
     "StartumGapCoverApplicationForm",
     "DiscoveryForm",
   ];
-  const customerNames = customers.map((customer) => ({id:customer.id,name:customer.firstNames}));
-//   const customerNames = [{id:1,name:"Customer A"},{id:2,name:"Customer B"},{id:3,name:"Customer C"},{id:4,name:"Customer D"}];
+  const customerNames = customers?.map((customer) => ({id:customer.id,name:customer.firstNames}));
   const fixedName = "Forms";
   //   const tabsStyle = {
   //     border: "1px solid",
@@ -76,6 +70,11 @@ export default function FormsSelectMenu() {
     setSelectedTab(newValue);
     console.log(newValue);
     console.log(selectedNames);
+  };
+
+  const handleDeleteSingleOption = (id) => {
+    if (currentCustomer?.id === id) setCurrentCustomer({});
+    setCustomers((prev) => prev.filter((name) => name.id !== id));
   };
 
   const isAllSelected =
@@ -129,7 +128,7 @@ export default function FormsSelectMenu() {
           </FormControl>
 
           {/* Field 2: Single select, no select all */}
-          <FormControl sx={{ minWidth: 275 }}>
+          <FormControl sx={{ width: 275 }}>
             <InputLabel>Select Customer Name</InputLabel>
             <Select
               value={singleName}
@@ -137,8 +136,22 @@ export default function FormsSelectMenu() {
               input={<OutlinedInput label="Select Customer Name" />}
             >
               {customerNames.map((name) => (
-                <MenuItem key={name.id} value={name.id}>
-                  {name.name}
+                <MenuItem key={name.id} value={name.id}
+                 onMouseEnter={() => setHoveredOption(name)}
+                  onMouseLeave={() => setHoveredOption(null)}>
+                  <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                    <Typography>{name.name}</Typography>
+                    <IconButton
+                      edge="end"
+                      sx={{p: '0 12px', visibility: hoveredOption?.id === name.id ? 'visible' : 'hidden', '&:hover': { backgroundColor: 'transparent' }}}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteSingleOption(name.id);
+                      }}
+                    >
+                      <DeleteIcon sx={{'&:hover': { color:'#cc0202'}}} fontSize="small" />
+                    </IconButton>
+                  </Box>
                 </MenuItem>
               ))}
             </Select>
@@ -215,7 +228,7 @@ export default function FormsSelectMenu() {
             }}
           >
             <Typography variant="body1" sx={{ color: "#555" }}>
-              Please select at least one form from the multi-select and one from
+              Please select at least one form from the multi-select and one customer from
               the single select to view the form.
             </Typography>
           </Box>

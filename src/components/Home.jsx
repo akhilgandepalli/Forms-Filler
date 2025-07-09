@@ -15,11 +15,13 @@ const Home = () => {
           borderRadius: 2,
           margin: "calc(var(--template-frame-height, 0px) + 8px) 0px",
           display: "flex",
+          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
         }}
-      >
+      ><h2>Welcome the Home Page !</h2>
         <Box sx={{ display: "flex", gap: 1, pr: 1 }}>
+          
             <Button
               variant="outlined"
               onClick={()=>navigate('/commonform/new')}

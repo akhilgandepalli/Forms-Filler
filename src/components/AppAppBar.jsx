@@ -39,6 +39,10 @@ export default function AppAppBar() {
         <StyledToolbar variant="dense" disableGutters>
           <Box
             sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
+            onClick={() => {
+              navigate("/");
+              setCurrentCustomer(null);
+            }}
           >
             <img
               src="/images/logo-4.png"
