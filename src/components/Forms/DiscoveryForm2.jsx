@@ -52,7 +52,7 @@ const DiscoveryForm2 = () => {
       title: currentCustomer?.title ?? "",
       initials: currentCustomer?.initials ?? "",
       surname: currentCustomer?.surname ?? "",
-      firstNames: currentCustomer?.firstNames ?? "",
+      firstName: currentCustomer?.firstName ?? "",
       idPassportNumber: currentCustomer?.idPassportNumber ?? "",
       gender: currentCustomer?.gender ?? "",
       dateOfBirth: currentCustomer?.dateOfBirth ?? "",
@@ -67,7 +67,7 @@ const DiscoveryForm2 = () => {
       spouseTitle: currentCustomer?.spouseTitle ?? "",
       spouseInitials: currentCustomer?.spouseInitials ?? "",
       spouseSurname: currentCustomer?.spouseSurname ?? "",
-      spouseFirstNames: currentCustomer?.spouseFirstNames ?? "",
+      spousefirstName: currentCustomer?.spousefirstName ?? "",
       spouseIdPassportNumber: currentCustomer?.spouseIdPassportNumber ?? "",
       spouseGender: currentCustomer?.spouseGender ?? "",
       spouseDateOfBirth: currentCustomer?.spouseDateOfBirth ?? "",
@@ -78,7 +78,7 @@ const DiscoveryForm2 = () => {
       dependant1Title: currentCustomer?.dependant1Title ?? "",
       dependant1Initials: currentCustomer?.dependant1Initials ?? "",
       dependant1Surname: currentCustomer?.dependant1Surname ?? "",
-      dependant1FirstNames: currentCustomer?.dependant1FirstNames ?? "",
+      dependant1firstName: currentCustomer?.dependant1firstName ?? "",
       dependant1IdPassportNumber:
         currentCustomer?.dependant1IdPassportNumber ?? "",
       dependant1Gender: currentCustomer?.dependant1Gender ?? "",
@@ -90,7 +90,7 @@ const DiscoveryForm2 = () => {
       dependant2Title: currentCustomer?.dependant2Title ?? "",
       dependant2Initials: currentCustomer?.dependant2Initials ?? "",
       dependant2Surname: currentCustomer?.dependant2Surname ?? "",
-      dependant2FirstNames: currentCustomer?.dependant2FirstNames ?? "",
+      dependant2firstName: currentCustomer?.dependant2firstName ?? "",
       dependant2IdPassportNumber:
         currentCustomer?.dependant2IdPassportNumber ?? "",
       dependant2Gender: currentCustomer?.dependant2Gender ?? "",
@@ -102,7 +102,7 @@ const DiscoveryForm2 = () => {
       dependant3Title: currentCustomer?.dependant3Title ?? "",
       dependant3Initials: currentCustomer?.dependant3Initials ?? "",
       dependant3Surname: currentCustomer?.dependant3Surname ?? "",
-      dependant3FirstNames: currentCustomer?.dependant3FirstNames ?? "",
+      dependant3firstName: currentCustomer?.dependant3firstName ?? "",
       dependant3IdPassportNumber:
         currentCustomer?.dependant3IdPassportNumber ?? "",
       dependant3Gender: currentCustomer?.dependant3Gender ?? "",
@@ -238,7 +238,7 @@ const DiscoveryForm2 = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 1000, mx: "auto", padding: 3 }}>
+    <Box sx={{ maxWidth: 1200, mx: "auto", padding: 3, boxShadow: 1 }}>
       <Typography variant="h5" gutterBottom textAlign="center">
         Discovery Health Medical Scheme Application (2025)
       </Typography>
@@ -312,7 +312,7 @@ const DiscoveryForm2 = () => {
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
-                name="firstNames"
+                name="firstName"
                 control={control}
                 rules={{ required: "First names are required" }}
                 render={({ field }) => (
@@ -322,8 +322,8 @@ const DiscoveryForm2 = () => {
                     required
                     fullWidth
                     label="First names (as per ID)"
-                    error={!!errors.firstNames}
-                    helperText={errors.firstNames?.message}
+                    error={!!errors.firstName}
+                    helperText={errors.firstName?.message}
                   />
                 )}
               />
@@ -347,7 +347,7 @@ const DiscoveryForm2 = () => {
               />
             </Grid>
             <Grid size={{ xs: 6, sm: 4 }}>
-              <FormControl fullWidth error={!!errors.gender}>
+              <FormControl fullWidth required error={!!errors.gender}>
                 <FormLabel>Gender</FormLabel>
                 <Controller
                   name="gender"
@@ -597,7 +597,7 @@ const DiscoveryForm2 = () => {
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
-                name="spouseFirstNames"
+                name="spousefirstName"
                 control={control}
                 render={({ field }) => (
                   <TextField
@@ -605,8 +605,8 @@ const DiscoveryForm2 = () => {
                     {...field}
                     fullWidth
                     label="First names (as per ID)"
-                    error={!!errors.spouseFirstNames}
-                    helperText={errors.spouseFirstNames?.message}
+                    error={!!errors.spousefirstName}
+                    helperText={errors.spousefirstName?.message}
                   />
                 )}
               />
@@ -787,7 +787,7 @@ const DiscoveryForm2 = () => {
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <Controller
-                    name={`dependant${depIndex}FirstNames`}
+                    name={`dependant${depIndex}firstName`}
                     control={control}
                     render={({ field }) => (
                       <TextField
@@ -795,9 +795,9 @@ const DiscoveryForm2 = () => {
                         {...field}
                         fullWidth
                         label="First names (as per ID)"
-                        error={!!errors[`dependant${depIndex}FirstNames`]}
+                        error={!!errors[`dependant${depIndex}firstName`]}
                         helperText={
-                          errors[`dependant${depIndex}FirstNames`]?.message
+                          errors[`dependant${depIndex}firstName`]?.message
                         }
                       />
                     )}
@@ -1105,6 +1105,7 @@ const DiscoveryForm2 = () => {
               <TextField
                 size="small"
                 {...field}
+                required
                 fullWidth
                 label="Health Plan Option"
                 placeholder="e.g., Executive, KeyCare Plus, etc."
@@ -1232,6 +1233,7 @@ const DiscoveryForm2 = () => {
                   <TextField
                     size="small"
                     {...field}
+                    required
                     fullWidth
                     label="Employer Name"
                     error={!!errors.employerName}
@@ -1326,6 +1328,7 @@ const DiscoveryForm2 = () => {
                   <TextField
                     size="small"
                     {...field}
+                    required
                     fullWidth
                     label="Bank Name"
                     error={!!errors.bankName}
@@ -1343,6 +1346,7 @@ const DiscoveryForm2 = () => {
                   <TextField
                     size="small"
                     {...field}
+                    required
                     fullWidth
                     label="Branch Name"
                     error={!!errors.branchNameBank}
@@ -1360,6 +1364,7 @@ const DiscoveryForm2 = () => {
                   <TextField
                     size="small"
                     {...field}
+                    required
                     fullWidth
                     label="Branch Code"
                     error={!!errors.branchCode}
@@ -1377,6 +1382,7 @@ const DiscoveryForm2 = () => {
                   <TextField
                     size="small"
                     {...field}
+                    required
                     fullWidth
                     label="Account Number"
                     error={!!errors.accountNumber}
@@ -1389,7 +1395,6 @@ const DiscoveryForm2 = () => {
               <Controller
                 name="accountType"
                 control={control}
-                rules={{ required: "Account type is required" }}
                 render={({ field }) => (
                   <TextField
                     size="small"

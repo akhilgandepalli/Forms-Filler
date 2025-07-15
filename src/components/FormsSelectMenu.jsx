@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useMemo, useCallback } from "react";
 import {
   Box,
   FormControl,
@@ -13,201 +13,289 @@ import {
   Container,
   Typography,
   IconButton,
+  TextField,
+  InputAdornment,
+  Paper,
 } from "@mui/material";
-import { Start } from "@mui/icons-material";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
+import DeleteIcon from "@mui/icons-material/Delete";
 import StartumGapCoverClaimForm from "./Forms/StartumGapCoverClaimForm";
 import StartumGapCoverApplicationForm from "./Forms/StartumGapCoverApplicationForm";
 import DiscoveryForm2 from "./Forms/DiscoveryForm2";
 import { appContext } from "../App";
-import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function FormsSelectMenu() {
-  const [selectedNames, setSelectedNames] = useState([]);
-  const [singleName, setSingleName] = useState("");
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [hoveredOption, setHoveredOption] = useState(null);
   const { customers, setCustomers, currentCustomer, setCurrentCustomer } =
     useContext(appContext);
+
+  // State management
+  const [selectedNames, setSelectedNames] = useState([]);
+  const [customerName, setCustomerName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [hoveredOption, setHoveredOption] = useState(null);
+  const [query, setQuery] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+
+  // Constants
+  const formNames = {
+    Discovery: ["DiscoveryForm"],
+    Startum: ["StartumGapCoverClaimForm", "StartumGapCoverApplicationForm"],
+  };
+  const companyNames = Object.keys(formNames);
   const names = [
     "StartumGapCoverClaimForm",
     "StartumGapCoverApplicationForm",
     "DiscoveryForm",
   ];
-  const customerNames = customers?.map((customer) => ({id:customer.id,name:customer.firstNames}));
-  const fixedName = "Forms";
-  //   const tabsStyle = {
-  //     border: "1px solid",
-  //     mr: "2px",
-  //     borderRadius: 1,
-  //     p: "4px",
-  //   };
 
-  const handleMultiSelectChange = (event) => {
-    const {
-      target: { value },
-    } = event;
+  // Memoized values
+  const customerNames = useMemo(
+    () =>
+      customers?.map((customer) => ({
+        id: customer.id,
+        name: customer.firstName,
+      })) || [],
+    [customers]
+  );
 
-    if (value.includes("all")) {
-      if (selectedNames.length === names.length) {
-        setSelectedNames([]);
+  const isAllSelected = useMemo(
+    () =>
+      formNames[companyName]?.length > 0 &&
+      selectedNames.length === formNames[companyName]?.length,
+    [companyName, selectedNames, formNames]
+  );
+
+  const showTabs = useMemo(
+    () => selectedNames.length > 0 && companyName !== "",
+    [selectedNames, companyName, customerName]
+  );
+
+  const CurrentTab = useMemo(
+    () => (showTabs ? selectedNames[selectedTab] : ""),
+    [showTabs, selectedNames, selectedTab]
+  );
+
+  const displayQuery = useMemo(() => {
+    return currentCustomer?.firstName || query;
+  }, [currentCustomer, query]);
+
+  // Event handlers
+  const handleMultiSelectChange = useCallback(
+    (event) => {
+      const { value } = event.target;
+      if (value.includes("all")) {
+        setSelectedNames((prev) =>
+          prev.length === formNames[companyName]?.length
+            ? []
+            : formNames[companyName] || []
+        );
       } else {
-        setSelectedNames(names);
+        setSelectedNames(typeof value === "string" ? value.split(",") : value);
       }
-    } else {
-      setSelectedNames(typeof value === "string" ? value.split(",") : value);
-    }
-  };
+    },
+    [companyName, formNames]
+  );
 
-  const handleSingleSelectChange = (event) => {
-    setSingleName(event.target.value);
-    setCurrentCustomer(
-      customers.find((name) => name.id === event.target.value)
-    );
-    console.log(currentCustomer);
-  }; 
+  const handleCompanyChange = useCallback((event) => {
+    setCompanyName(event.target.value);
+    setSelectedNames([]);
+  }, []);
 
-  const handleTabChange = (event, newValue) => {
+  // const handleCustomerChange = useCallback((event) => {
+  //   const customerId = event.target.value;
+  //   setCustomerName(customerId);
+  //   const foundCustomer = customers.find(name => name.id === customerId);
+  //   setCurrentCustomer(foundCustomer);
+  // }, [customers, setCurrentCustomer]);
+
+  const handleTabChange = useCallback((event, newValue) => {
     setSelectedTab(newValue);
-    console.log(newValue);
-    console.log(selectedNames);
-  };
+  }, []);
 
-  const handleDeleteSingleOption = (id) => {
-    if (currentCustomer?.id === id) setCurrentCustomer({});
-    setCustomers((prev) => prev.filter((name) => name.id !== id));
-  };
+  // const handleDeleteSingleOption = useCallback((id) => {
+  //   if (currentCustomer?.id === id) setCurrentCustomer({});
+  //   setCustomers(prev => prev.filter(name => name.id !== id));
+  //   location.reload();
+  // }, [currentCustomer, setCurrentCustomer, setCustomers]);
 
-  const isAllSelected =
-    names.length > 0 && selectedNames.length === names.length;
-  const showTabs = selectedNames.length > 0 && singleName !== "";
-  const CurrentTab = showTabs ? selectedNames[selectedTab] : "";
+  const handleSearchChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      setQuery(value);
+      setCurrentCustomer(null);
+      setSelectedNames([]);
 
-  return (
-    <Container
-      maxWidth="md"
-      sx={{
-        backgroundColor: "whitesmoke",
-        backdropFilter: "blur(8px)",
-        boxShadow: 1,
-        borderRadius: 2,
-        py: "8px",
-        mt: "calc(var(--template-frame-height, 0px) + 8px)",
-        //margin: "calc(var(--template-frame-height, 0px) + 8px) 0px",
-      }}
-    >
-      {/* Section 1 */}
-      <Box mb={2} mt={2}>
-        <Typography variant="subtitle2" sx={{ my: 2 }}>
-          Select Required Forms and Customer
-        </Typography>
-        <Box display="flex" flexWrap="wrap" gap={1}>
-          {/* Field 1: Multi-select with Select All */}
-          <FormControl sx={{ width: 275 }}>
-            <InputLabel>Select Required Forms</InputLabel>
-            <Select
-              multiple
-              value={selectedNames}
-              onChange={handleMultiSelectChange}
-              input={<OutlinedInput label="Select Required Forms" />}
-              renderValue={(selected) => selected.join(", ")}
-            >
-              <MenuItem value="all">
-                <Checkbox
-                  checked={isAllSelected}
-                  indeterminate={selectedNames.length > 0 && !isAllSelected}
-                />
-                <ListItemText primary="Select All" />
-              </MenuItem>
-              {names.map((name) => (
-                <MenuItem key={name} value={name}>
-                  <Checkbox checked={selectedNames.indexOf(name) > -1} />
-                  <ListItemText primary={name} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+      if (value.length >= 2) {
+        const results = customerNames.filter((item) =>
+          item?.name.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredResults(results);
+        setShowResults(true);
+      } else {
+        setFilteredResults([]);
+        setShowResults(false);
+      }
+    },
+    [customerNames]
+  );
 
-          {/* Field 2: Single select, no select all */}
-          <FormControl sx={{ width: 275 }}>
-            <InputLabel>Select Customer Name</InputLabel>
-            <Select
-              value={singleName}
-              onChange={handleSingleSelectChange}
-              input={<OutlinedInput label="Select Customer Name" />}
-            >
-              {customerNames.map((name) => (
-                <MenuItem key={name.id} value={name.id}
-                 onMouseEnter={() => setHoveredOption(name)}
-                  onMouseLeave={() => setHoveredOption(null)}>
-                  <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-                    <Typography>{name.name}</Typography>
-                    <IconButton
-                      edge="end"
-                      sx={{p: '0 12px', visibility: hoveredOption?.id === name.id ? 'visible' : 'hidden', '&:hover': { backgroundColor: 'transparent' }}}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteSingleOption(name.id);
-                      }}
-                    >
-                      <DeleteIcon sx={{'&:hover': { color:'#cc0202'}}} fontSize="small" />
-                    </IconButton>
-                  </Box>
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+  const handleSearchClick = useCallback(() => {
+    console.log("Searched for:", query);
+  }, [query]);
 
-          {/* Field 3: Dropdown with only one name */}
-          <FormControl sx={{ minWidth: 275 }}>
-            <InputLabel>Fixed Name</InputLabel>
-            <Select
-              value={fixedName}
-              input={<OutlinedInput label="Fixed Name" />}
-              disabled
-            >
-              <MenuItem value={fixedName}>{fixedName}</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </Box>
+  const handleClear = useCallback(() => {
+    setQuery("");
+    setCustomerName("");
+    setCurrentCustomer(null);
+    setFilteredResults([]);
+    setShowResults(false);
+  }, [setCurrentCustomer]);
+  const handleItemClick = useCallback(
+    (item) => {
+      setQuery(item.name);
+      setCustomerName(item.id);
+      const foundCustomer = customers.find((name) => name.id === item.id);
+      setCurrentCustomer(foundCustomer);
+      setFilteredResults([]);
+      setShowResults(false);
+    },
+    [customers, setCurrentCustomer]
+  );
 
-      {/* Section 2: Show only if both Field 1 and Field 2 are selected */}
-      {showTabs && (
-        <Box>
-          <Typography variant="subtitle2">Select The Required Form</Typography>
-          <Tabs
-            variant="scrollable"
-            scrollButtons="auto"
-            value={selectedTab}
-            onChange={handleTabChange}
+  // Render functions
+  const renderCompanySelect = () => (
+    <FormControl sx={{ width: { xs: "100%", md: "25%" } }}>
+      <InputLabel>Select Company Name</InputLabel>
+      <Select
+        value={companyName}
+        onChange={handleCompanyChange}
+        input={<OutlinedInput label="Select Company Name" />}
+      >
+        {companyNames.map((name) => (
+          <MenuItem
+            key={name}
+            value={name}
+            onMouseEnter={() => setHoveredOption(name)}
+            onMouseLeave={() => setHoveredOption(null)}
           >
-            {selectedNames.map((name, index) => (
-              <Tab
-                key={name}
-                label={name}
-                //sx={{color:'#000'}}
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              width="100%"
+            >
+              <Typography>{name}</Typography>
+            </Box>
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+
+  const renderFormsSelect = () => (
+    <FormControl sx={{ width: { xs: "100%", md: "45%" } }}>
+      <InputLabel>Select Required Forms</InputLabel>
+      <Select
+        multiple
+        value={selectedNames}
+        onChange={handleMultiSelectChange}
+        input={<OutlinedInput label="Select Required Forms" />}
+        renderValue={(selected) => selected.join(", ")}
+      >
+        {formNames[companyName]?.length > 0 ? (
+          [
+            <MenuItem
+              key="select-all"
+              value="all"
+              disabled={formNames[companyName].length <= 1}
+            >
+              <Checkbox
+                checked={isAllSelected}
+                indeterminate={
+                  selectedNames.length > 0 &&
+                  selectedNames.length < formNames[companyName].length
+                }
               />
-            ))}
-          </Tabs>
-        </Box>
+              <ListItemText primary="Select All" />
+            </MenuItem>,
+            ...formNames[companyName].map((name) => (
+              <MenuItem key={name} value={name}>
+                <Checkbox checked={selectedNames.indexOf(name) > -1} />
+                <ListItemText primary={name} />
+              </MenuItem>
+            )),
+          ]
+        ) : (
+          <MenuItem disabled>
+            <ListItemText primary="No Forms Available" />
+          </MenuItem>
+        )}
+      </Select>
+    </FormControl>
+  );
+
+  const renderSearchField = () => (
+    <Box sx={{ width: "25%", position: "relative" }}>
+      <TextField
+        fullWidth
+        label={"Select Customer"}
+        value={displayQuery}
+        onChange={handleSearchChange}
+        placeholder="Search..."
+        variant="outlined"
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              {query && currentCustomer ? (
+                <IconButton onClick={handleClear} size="small">
+                  <ClearIcon />
+                </IconButton>
+              ) : (
+                <IconButton onClick={handleSearchClick}>
+                  <SearchIcon />
+                </IconButton>
+              )}
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      {showResults && (
+        <Paper
+          sx={{
+            position: "absolute",
+            width: "100%",
+            mt: 1,
+            zIndex: 10,
+            maxHeight: 200,
+            overflowY: "auto",
+          }}
+        >
+          {filteredResults.length > 0 ? (
+            filteredResults.map((item) => (
+              <MenuItem key={item.id} onClick={() => handleItemClick(item)}>
+                {item.name}
+              </MenuItem>
+            ))
+          ) : (
+            <Typography sx={{ p: 2 }} color="text.secondary">
+              No results found
+            </Typography>
+          )}
+        </Paper>
       )}
-      {/* Section 3: Show the form based on the selected tab */}
-      {showTabs ? (
-        <>
-          <Box mt={2}>
-            {CurrentTab === "StartumGapCoverClaimForm" && (
-              <StartumGapCoverClaimForm />
-            )}
-            {CurrentTab === "StartumGapCoverApplicationForm" && (
-              <StartumGapCoverApplicationForm />
-            )}
-            {CurrentTab === "DiscoveryForm" && <DiscoveryForm2 />}
-          </Box>
-        </>
-      ) : (
+    </Box>
+  );
+
+  const renderFormContent = () => {
+    if (!showTabs) {
+      return (
         <Box
           sx={{
-            height: "30vh",
+            height: "60vh",
             backgroundColor: "whitesmoke",
             backdropFilter: "blur(8px)",
             boxShadow: 1,
@@ -224,16 +312,76 @@ export default function FormsSelectMenu() {
               flexDirection: "column",
               alignItems: "center",
               gap: 3,
-              pr: 1,
             }}
           >
             <Typography variant="body1" sx={{ color: "#555" }}>
-              Please select at least one form from the multi-select and one customer from
-              the single select to view the form.
+              Please select a company, required forms and customer to proceed.
             </Typography>
           </Box>
         </Box>
-      )}
+      );
+    }
+
+    return (
+      <>
+        <Box>
+          <Typography variant="subtitle2">Select The Required Form</Typography>
+          <Tabs
+            variant="scrollable"
+            scrollButtons="auto"
+            value={selectedTab}
+            onChange={handleTabChange}
+          >
+            {selectedNames.map((name) => (
+              <Tab
+                key={name}
+                label={name}
+                sx={{
+                  textTransform: "capitalize",
+                  fontWeight: 500,
+                  color: "#000",
+                  fontSize: "0.9rem",
+                }}
+              />
+            ))}
+          </Tabs>
+        </Box>
+        <Box mt={2}>
+          {CurrentTab === "StartumGapCoverClaimForm" && (
+            <StartumGapCoverClaimForm />
+          )}
+          {CurrentTab === "StartumGapCoverApplicationForm" && (
+            <StartumGapCoverApplicationForm />
+          )}
+          {CurrentTab === "DiscoveryForm" && <DiscoveryForm2 />}
+        </Box>
+      </>
+    );
+  };
+
+  return (
+    <Container
+      maxWidth="xl"
+      sx={{
+        backgroundColor: "whitesmoke",
+        backdropFilter: "blur(8px)",
+        boxShadow: 1,
+        borderRadius: 2,
+        py: "7px",
+        mt: "calc(var(--template-frame-height, 0px) + 8px)",
+      }}
+    >
+      <Box mb={2} mt={2}>
+        <Typography variant="subtitle2" sx={{ my: 2 }}>
+          Select Required Forms and Customer
+        </Typography>
+        <Box display="flex" flexWrap="wrap" justifyContent="space-between">
+          {renderCompanySelect()}
+          {renderFormsSelect()}
+          {renderSearchField()}
+        </Box>
+      </Box>
+      {renderFormContent()}
     </Container>
   );
 }

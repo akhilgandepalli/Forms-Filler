@@ -1,12 +1,20 @@
-import * as React from "react";
+import React, { useContext, useState } from "react";
 import { styled, alpha } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-import { Container, Typography } from "@mui/material";
+import {
+  Container,
+  Menu,
+  Typography,
+  MenuItem,
+  IconButton,
+  Button,
+  Box,
+  AppBar,
+  Toolbar,
+} from "@mui/material";
 import { useNavigate } from "react-router";
 import { appContext } from "../App";
+import { AccountCircle } from "@mui/icons-material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: "flex",
@@ -19,33 +27,73 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   borderColor: (theme.vars || theme).palette.divider,
   backgroundColor: "rgba(255, 255, 255, 0.9)",
   boxShadow: (theme.vars || theme).shadows[1],
-  padding: "8px 24px",
+  padding: "4px 16px",
 }));
 
 export default function AppAppBar() {
-  const { setCurrentCustomer } = React.useContext(appContext);
-  const navigate= useNavigate();
+  const { setCurrentCustomer, loginStatus, setLoginStatus } =
+    useContext(appContext);
+  const [accountAnchorEl, setAccountAnchorEl] = useState(null);
+  const [menuAnchors, setMenuAnchors] = useState({});
+
+  const menuOptions = ["Customer", "Forms", "Reports", "Admin"];
+  const entryOptions = [
+    "Create Customer",
+    "Modify Customer",
+    "Delete Customer",
+    "View Customers",
+  ];
+  const formsOptions = ["Generate Form"];
+  const adminOptions = ["Add Form", "Default Mapping"];
+
+  const handleMenuOpen = (event, menuKey) => {
+    setMenuAnchors((prev) => ({ ...prev, [menuKey]: event.currentTarget }));
+  };
+
+  const handleMenuClose = (menuKey) => {
+    setMenuAnchors((prev) => ({ ...prev, [menuKey]: null }));
+  };
+
+  const handleAccountClick = (event) => {
+    setAccountAnchorEl(event.currentTarget);
+  };
+
+  const handleAccountClose = () => {
+    setAccountAnchorEl(null);
+  };
+  const handleLogoutClick = () => {
+    setLoginStatus(false);
+    handleAccountClose();
+    navigate("/login");
+  };
+  const handleLoginClick = () => {
+    handleAccountClose();
+    navigate("/login");
+  };
+  const navigate = useNavigate();
   return (
     <AppBar
-      position="static"
+      position="fixed"
       sx={{
         boxShadow: 0,
         bgcolor: "transparent",
         backgroundImage: "none",
-        mt: "calc(var(--template-frame-height, 0px) + 8px)",
+        top: 0,
+        p: "8px",
+        backdropFilter: "blur(2px)",
       }}
     >
-      <Container maxWidth="md" sx={{ padding: { xs: 0 } }}>
+      <Container maxWidth="xl" sx={{ padding: { xs: 0, md: 0 } }}>
         <StyledToolbar variant="dense" disableGutters>
           <Box
-            sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
+            sx={{ display: "flex", alignItems: "center", px: 0 }}
             onClick={() => {
               navigate("/");
               setCurrentCustomer(null);
             }}
           >
             <img
-              src="/images/logo-4.png"
+              src="/images/c-logo.jpg"
               style={{ width: "34px", padding: "0", borderRadius: "50%" }}
             />
             <Typography
@@ -55,36 +103,178 @@ export default function AppAppBar() {
                 color: "#00204a",
                 fontFamily: "revert-layer",
                 fontWeight: 600,
+                //textTransform: "uppercase",
               }}
             >
-              Forms Filler
+              Clockwise
             </Typography>
           </Box>
-          <Box sx={{ display: "flex", gap: 1, pr: 1 }}>
+          {/* Menu Buttons */}
+          <Box
+            sx={{
+              width: "50%",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Button
-              variant="outlined"
-              onClick={()=>{navigate('/commonform/new');setCurrentCustomer(null)}}
+              variant="standard"
+              size="small"
               sx={{
-                bgcolor: "#0c3948",
-                color: "#fff",
-                "&:hover": { bgcolor: "#0c3948" },
+                color: "#00204a",
+                fontWeight: 600,
+                //bgcolor: alpha("#00204a", 0.05),
+                fontSize: "0.9rem",
+                "&:hover": { bgcolor: alpha("#00204a", 0.2) },
                 textTransform: "capitalize",
               }}
+              onClick={(e) => navigate("/")}
             >
-              Common Form
+              Home
             </Button>
-            <Button
-              variant="outlined"
-              onClick={()=>navigate('/formsection')}
+            {menuOptions.map((num) => (
+              <Box
+                key={`menu${num}`}
+                sx={{
+                  display:
+                    num === "Admin" ? (loginStatus ? "flex" : "none") : "flex",
+                }}
+                onMouseEnter={(e) => handleMenuOpen(e, `menu${num}`)}
+                onMouseLeave={() => handleMenuClose(`menu${num}`)}
+              >
+                <Button
+                  variant="standard"
+                  size="small"
+                  endIcon={<ArrowDropDownIcon />}
+                  sx={{
+                    color: "#00204a",
+                    fontWeight: 600,
+                    //bgcolor: alpha("#00204a", 0.05),
+                    fontSize: "0.9rem",
+                    "&:hover": { bgcolor: alpha("#00204a", 0.2) },
+                    textTransform: "capitalize",
+                  }}
+                  //onClick={(e) => handleMenuOpen(e, `menu${num}`)}
+                >
+                  {num}
+                </Button>
+                <Menu
+                  anchorEl={menuAnchors[`menu${num}`]}
+                  open={Boolean(menuAnchors[`menu${num}`])}
+                  onClose={() => handleMenuClose(`menu${num}`)}
+                  MenuListProps={{
+                    onMouseLeave: () => handleMenuClose(`menu${num}`),
+                  }}
+                  sx={{ marginTop: "16px", zIndex: 1 }}
+                >
+                  {num === "Customer" &&
+                    entryOptions.map((option) => (
+                      <MenuItem
+                        key={option}
+                        onClick={() => {
+                          handleMenuClose(`menu${num}`);
+                          setCurrentCustomer(null);
+                          if (
+                            option == "Modify Customer" ||
+                            option == "Delete Customer"
+                          ) {
+                            navigate(
+                              `/customer/${option
+                                .toLowerCase()
+                                .replace(" ", "")}`
+                            );
+                          } else {
+                            navigate(
+                              `/customer/${option
+                                .toLowerCase()
+                                .replace(" ", "")}`
+                            );
+                          }
+                        }}
+                      >
+                        {option}
+                      </MenuItem>
+                    ))}
+                  {num === "Forms" &&
+                    formsOptions.map((option) => (
+                      <MenuItem
+                        key={option}
+                        onClick={() => {
+                          setCurrentCustomer(null);
+                          handleMenuClose(`menu${num}`);
+                          navigate("/forms/generateform");
+                        }}
+                      >
+                        {option}
+                      </MenuItem>
+                    ))}
+                  {num === "Admin" &&
+                    adminOptions.map((option) => (
+                      <MenuItem
+                        key={option}
+                        onClick={() => {
+                          handleMenuClose(`menu${num}`);
+                          //navigate(`/admin/${option.toLowerCase().replace(" ", "")}`);
+                        }}
+                      >
+                        {option}
+                      </MenuItem>
+                    ))}
+                  {num === "Reports" && (
+                    <MenuItem
+                      onClick={() => {
+                        handleMenuClose(`menu${num}`);
+                        //navigate("/reports");
+                      }}
+                    >
+                      Generate Report
+                    </MenuItem>
+                  )}
+                </Menu>
+              </Box>
+            ))}
+          </Box>
+
+          {/*Account Button */}
+          <Box
+            onMouseEnter={handleAccountClick}
+            onMouseLeave={handleAccountClose}
+          >
+            <IconButton
+              //onClick={handleAccountClick}
+
               sx={{
-                bgcolor: "#0c3948",
-                color: "#fff",
-                "&:hover": { bgcolor: "#0c3948" },
-                textTransform: "capitalize",
+                color: "#00204a",
+                "&:hover": { bgcolor: alpha("#00204a", 0.1) },
               }}
             >
-              Forms Section
-            </Button>
+              <AccountCircle sx={{ fontSize: "28px" }} />
+            </IconButton>
+            <Menu
+              anchorEl={accountAnchorEl}
+              open={Boolean(accountAnchorEl)}
+              onClose={handleAccountClose}
+              sx={{ marginTop: "12px", zIndex: 1 }}
+              MenuListProps={{
+                onMouseLeave: () => handleAccountClose(),
+              }}
+            >
+              {loginStatus ? (
+                <Box>
+                  <MenuItem onClick={handleAccountClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleAccountClose}>
+                    Change Password
+                  </MenuItem>
+                  <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
+                </Box>
+              ) : (
+                <Box>
+                  <MenuItem onClick={handleLoginClick}>Login</MenuItem>
+                  <MenuItem onClick={handleAccountClose}> Register</MenuItem>
+                </Box>
+              )}
+            </Menu>
           </Box>
         </StyledToolbar>
       </Container>

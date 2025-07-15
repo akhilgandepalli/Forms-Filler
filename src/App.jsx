@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
 import "./App.css";
 import AppAppBar from "./components/AppAppBar.jsx";
@@ -9,12 +9,22 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import FormsSelectMenu from "./components/FormsSelectMenu.jsx";
 import Home from "./components/Home.jsx";
 import ErrorPage from "./components/ErrorPage.jsx";
+import LoginPage from "./components/LoginPage.jsx";
+import ViewCustomers from "./components/ViewCustomers.jsx";
+import ModifyCustomersPage from "./components/ModifyCustomersPage.jsx";
+import SearchComponent from "./components/SearchComponent.jsx";
+import DeleteCustomerPage from "./components/DeleteCustomerPage.jsx";
 
 export const appContext = createContext();
 
 function App() {
-  const [customers, setCustomers] = useState([]);
+  const getCustomersFromStorage = () => {
+    const storedCustomers = sessionStorage.getItem("customerData");
+    return storedCustomers ? JSON.parse(storedCustomers) : [];
+  };
+  const [customers, setCustomers] = useState(getCustomersFromStorage);
   const [currentCustomer, setCurrentCustomer] = useState(null);
+  const [loginStatus, setLoginStatus] = useState(false);
   function scrollToBottom() {
     window.scrollTo({
       top: document.body.scrollHeight,
@@ -27,6 +37,9 @@ function App() {
       behavior: "smooth",
     });
   }
+  useEffect(() => {
+    sessionStorage.setItem("customerData", JSON.stringify(customers));
+  }, [customers]);
 
   return (
     <>
@@ -41,19 +54,43 @@ function App() {
           left: 0,
           zIndex: -1,
         }}
-      ></Box>
-      <appContext.Provider value={{ customers, setCustomers, currentCustomer, setCurrentCustomer }}>
-      <BrowserRouter>
-        <AppAppBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/commonform/new" element={<MainPage />} />
-          <Route path="/formsection" element={<FormsSelectMenu />} />
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
-      </BrowserRouter>
+      />
+      <appContext.Provider
+        value={{
+          customers,
+          setCustomers,
+          currentCustomer,
+          setCurrentCustomer,
+          loginStatus,
+          setLoginStatus,
+        }}
+      >
+        <BrowserRouter>
+          <AppAppBar />
+          <Box
+            sx={{
+              height: "52px",
+            }}
+          />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/customer/createcustomer" element={<MainPage />} />
+            <Route path="/customer/viewcustomers" element={<ViewCustomers />} />
+            <Route
+              path="/customer/modifycustomer"
+              element={<ModifyCustomersPage />}
+            />
+            <Route
+              path="/customer/deletecustomer"
+              element={<DeleteCustomerPage />}
+            />
 
-      <IconButton>
+            <Route path="/forms/generateform" element={<FormsSelectMenu />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+        </BrowserRouter>
+
         <ArrowDownwardIcon
           onClick={scrollToBottom}
           sx={{
@@ -74,8 +111,7 @@ function App() {
             boxShadow: 3,
           }}
         />
-      </IconButton>
-      <IconButton>
+
         <ArrowUpwardIcon
           onClick={scrollToTop}
           sx={{
@@ -96,7 +132,6 @@ function App() {
             boxShadow: 3,
           }}
         />
-      </IconButton>
       </appContext.Provider>
     </>
   );

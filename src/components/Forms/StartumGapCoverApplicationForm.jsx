@@ -46,7 +46,7 @@ const StartumGapCoverApplicationForm = () => {
 
       // Section 3: Policyholder Details
       policyholderTitle: currentCustomer?.title ?? "",
-      policyholderName: currentCustomer?.firstNames ?? "",
+      policyholderName: currentCustomer?.firstName ?? "",
       policyholderSurname: currentCustomer?.surname ?? "",
       policyholderIdPassport: currentCustomer?.idPassportNumber ?? "",
       policyholderDob: currentCustomer?.dateOfBirth ?? "",
@@ -55,52 +55,51 @@ const StartumGapCoverApplicationForm = () => {
       policyholderAddress: currentCustomer?.Address ?? "",
       policyholderPostalCode: currentCustomer?.postalCode ?? "",
       policyholderEmail: currentCustomer?.email ?? "",
-      policyholderMedicalAid: "",
-      policyholderMedicalAidPlan: "",
-      policyholderMembershipNo: "",
+      policyholderMedicalAid: currentCustomer?.medicalAid ?? "",
+      policyholderMedicalAidPlan: currentCustomer?.medicalAidPlan ?? "",
+      policyholderMembershipNo: currentCustomer?.membershipNo ?? "",
       policyholderEmployer: currentCustomer?.employerName ?? "",
 
       // Section 4: Dependant Details (3 dependants by default)
       dependants: [
         {
           title: currentCustomer?.dependant1Title ?? "",
-          name: currentCustomer?.dependant1FirstNames ?? "",
+          name: currentCustomer?.dependant1firstName ?? "",
           surname: currentCustomer?.dependant1Surname ?? "",
           relationship: currentCustomer?.dependant1Relationship ?? "",
           idPassport: currentCustomer?.dependant1IdPassportNumber ?? "",
-          medicalAid: "",
-          medicalAidPlan: "",
-          membershipNo: "",
+          medicalAid: currentCustomer?.dependent1medicalAid ?? "",
+          medicalAidPlan: currentCustomer?.dependent1medicalAidPlan ?? "",
+          membershipNo: currentCustomer?.dependent1membershipNo ?? "",
           dob: currentCustomer?.dependant1DateOfBirth ?? "",
         },
         {
           title: currentCustomer?.dependant2Title ?? "",
-          name: currentCustomer?.dependant2FirstNames ?? "",
+          name: currentCustomer?.dependant2firstName ?? "",
           surname: currentCustomer?.dependant2Surname ?? "",
           relationship: currentCustomer?.dependant2Relationship ?? "",
           idPassport: currentCustomer?.dependant2IdPassportNumber ?? "",
-          medicalAid: "",
-          medicalAidPlan: "",
-          membershipNo: "",
+          medicalAid: currentCustomer?.dependent2medicalAid ?? "",
+          medicalAidPlan: currentCustomer?.dependent2medicalAidPlan ?? "",
+          membershipNo: currentCustomer?.dependent2membershipNo ?? "",
           dob: currentCustomer?.dependant2DateOfBirth ?? "",
         },
-        ,
         {
           title: currentCustomer?.dependant3Title ?? "",
-          name: currentCustomer?.dependant3FirstNames ?? "",
+          name: currentCustomer?.dependant3firstName ?? "",
           surname: currentCustomer?.dependant3Surname ?? "",
           relationship: currentCustomer?.dependant3Relationship ?? "",
           idPassport: currentCustomer?.dependant3IdPassportNumber ?? "",
-          medicalAid: "",
-          medicalAidPlan: "",
-          membershipNo: "",
+          medicalAid: currentCustomer?.dependent3medicalAid ?? "",
+          medicalAidPlan: currentCustomer?.dependent3medicalAidPlan ?? "",
+          membershipNo: currentCustomer?.dependent3membershipNo ?? "",
           dob: currentCustomer?.dependant3DateOfBirth ?? "",
         },
       ],
 
       // Section 5: Brokerage & Financial Advisor Details
       brokerageName: "",
-      financialAdvisorName: currentCustomer?.wantAdviser ?? "",
+      financialAdvisorName: currentCustomer?.adviserName ?? "",
       brokerageCode: "",
       advisorCode: currentCustomer?.adviserCode ?? "",
 
@@ -131,7 +130,7 @@ const StartumGapCoverApplicationForm = () => {
   const handlePrint = () => {
       const element = document.getElementById("applicationForm");
       const formTitle = "Stratum Gap Cover Application Form";
-      const customerName = `${currentCustomer.firstNames} ${currentCustomer.id}`;
+      const customerName = `${currentCustomer.firstName} ${currentCustomer.id}`;
       const fileName = `${formTitle} - ${customerName}.pdf`;
       //console.log(element);
       html2pdf(element, {
@@ -168,9 +167,9 @@ const StartumGapCoverApplicationForm = () => {
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
-                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1 }}
+                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
               >
                 1. APPLICATION TYPE
               </Typography>
@@ -218,9 +217,9 @@ const StartumGapCoverApplicationForm = () => {
             <Card sx={{ mb: 3 }}>
               <CardContent>
                 <Typography
-                  variant="h6"
+                  variant="subtitle1"
                   gutterBottom
-                  sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1 }}
+                  sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
                 >
                   2. CURRENT POLICYHOLDER DETAILS
                 </Typography>
@@ -307,9 +306,9 @@ const StartumGapCoverApplicationForm = () => {
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
-                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1 }}
+                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
               >
                 3. POLICYHOLDER DETAILS
               </Typography>
@@ -555,9 +554,9 @@ const StartumGapCoverApplicationForm = () => {
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
-                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1 }}
+                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
               >
                 4. DEPENDANT DETAILS
               </Typography>
@@ -722,9 +721,9 @@ const StartumGapCoverApplicationForm = () => {
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
-                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1 }}
+                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
               >
                 5. BROKERAGE & FINANCIAL ADVISOR DETAILS
               </Typography>
@@ -797,9 +796,9 @@ const StartumGapCoverApplicationForm = () => {
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
-                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1 }}
+                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
               >
                 6. WAITING PERIODS & LIMITED PAYOUT BENEFIT
               </Typography>
@@ -842,9 +841,9 @@ const StartumGapCoverApplicationForm = () => {
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
-                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1 }}
+                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
               >
                 7. DEBIT ORDER DETAILS
               </Typography>
@@ -1013,9 +1012,9 @@ const StartumGapCoverApplicationForm = () => {
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Typography
-                variant="h6"
+                variant="subtitle1"
                 gutterBottom
-                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1 }}
+                sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
               >
                 8. POLICYHOLDER ACCEPTANCE
               </Typography>

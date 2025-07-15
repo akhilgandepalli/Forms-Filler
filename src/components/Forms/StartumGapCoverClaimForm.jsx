@@ -37,7 +37,7 @@ const StartumGapCoverClaimForm = () => {
     defaultValues: {
       // Policyholder details
       policyholderTitle: currentCustomer?.title ?? "",
-      policyholderName: currentCustomer?.firstNames ?? "",
+      policyholderName: currentCustomer?.firstName ?? "",
       policyholderSurname: currentCustomer?.surname ?? "",
       policyholderIdPassport: currentCustomer?.idPassportNumber ?? "",
       policyholderDob: currentCustomer?.dateOfBirth ?? "",
@@ -99,7 +99,7 @@ const StartumGapCoverClaimForm = () => {
   const handlePrint = () => {
     const element = document.getElementById("claimForm");
     const formTitle = "Stratum Gap Cover Claim";
-    const customerName = `${currentCustomer.firstNames} ${currentCustomer.id}`;
+    const customerName = `${currentCustomer.firstName} ${currentCustomer.id}`;
     const fileName = `${formTitle} - ${customerName}.pdf`;
     //console.log(element);
     html2pdf(element, {

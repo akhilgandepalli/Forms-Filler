@@ -1,13 +1,15 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 
 import React from "react";
+import { useNavigate } from "react-router";
 
 const ErrorPage = () => {
+  const navigate = useNavigate();
   return (
-    <Container maxWidth="md" sx={{ padding: { xs: 0 } }}>
+    <Container maxWidth="xl" sx={{ padding: { xs: 0 } }}>
       <Box
         sx={{
-          height: "80vh",
+          height: "86vh",
           backgroundColor: "whitesmoke",
           backdropFilter: "blur(8px)",
           boxShadow: 1,
@@ -18,7 +20,15 @@ const ErrorPage = () => {
           alignItems: "center",
         }}
       >
-        <Box sx={{ display: "flex",flexDirection:"column",alignItems:'center', gap: 3, pr: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 3,
+            pr: 1,
+          }}
+        >
           <Typography
             variant="h4"
             sx={{ color: "#0c3948", fontWeight: "bold" }}
@@ -35,6 +45,9 @@ const ErrorPage = () => {
               color: "#fff",
               "&:hover": { bgcolor: "#0c3948" },
               textTransform: "capitalize",
+            }}
+            onClick={() => {
+              navigate("/");
             }}
           >
             Back to Home
