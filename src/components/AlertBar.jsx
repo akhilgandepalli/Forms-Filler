@@ -23,7 +23,7 @@ const AlertBar = ({message, openAlert, setOpenAlert}) => {
           }}
           severity="success"
         >
-          Submitted successfully!{message}
+          {message}!
         </Alert>{" "}
       </Collapse>
     </Stack>

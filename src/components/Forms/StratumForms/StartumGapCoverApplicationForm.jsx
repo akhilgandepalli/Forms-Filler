@@ -24,10 +24,12 @@ import {
   Alert,
   FormGroup,
 } from "@mui/material";
-import { appContext } from "../../App";
+import { appContext } from "../../../App";
+import { useNavigate } from "react-router";
 
 const StartumGapCoverApplicationForm = () => {
   const { currentCustomer } = useContext(appContext);
+  const navigate = useNavigate()
   const {
     control,
     handleSubmit,
@@ -128,27 +130,36 @@ const StartumGapCoverApplicationForm = () => {
   const selectedOptions = watch("selectedOptions");
 
   const handlePrint = () => {
-      const element = document.getElementById("applicationForm");
-      const formTitle = "Stratum Gap Cover Application Form";
-      const customerName = `${currentCustomer.firstName} ${currentCustomer.id}`;
-      const fileName = `${formTitle} - ${customerName}.pdf`;
-      //console.log(element);
-      html2pdf(element, {
-        filename: fileName,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-      })
-    };
-  
-    const onSubmit = (data) => {
-      console.log("Form Data:", data);
-      handlePrint();
-    };
+    const element = document.getElementById("applicationForm");
+    const formTitle = "Stratum Gap Cover Application Form";
+    const customerName = `${currentCustomer?.firstName} ${currentCustomer?.id}`;
+    const fileName = `${formTitle} - ${customerName}.pdf`;
+    //console.log(element);
+    html2pdf(element, {
+      filename: fileName,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    });
+  };
+
+  const onSubmit = (data) => {
+    console.log("Form Data:", data);
+    handlePrint();
+    navigate('/')
+  };
 
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", p: "2px" }}>
-      <Paper id={'applicationForm'} elevation={3} sx={{ p: 2 }}>
+      <Paper id={"applicationForm"} elevation={3} sx={{ p: 2 }}>
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          sx={{ position: "relative", top: 35, left: 5 }}
+        >
+          Id:&nbsp;
+          {currentCustomer?.id ?? ""}
+        </Typography>
         <Typography
           variant="h5"
           gutterBottom
@@ -219,7 +230,13 @@ const StartumGapCoverApplicationForm = () => {
                 <Typography
                   variant="subtitle1"
                   gutterBottom
-                  sx={{ color: "#fff", bgcolor: "#f36c23", pl: 1, ml: -1, mb: 2 }}
+                  sx={{
+                    color: "#fff",
+                    bgcolor: "#f36c23",
+                    pl: 1,
+                    ml: -1,
+                    mb: 2,
+                  }}
                 >
                   2. CURRENT POLICYHOLDER DETAILS
                 </Typography>
@@ -1083,12 +1100,8 @@ const StartumGapCoverApplicationForm = () => {
 
           {/* Submit Button */}
           <Box sx={{ textAlign: "center", mt: 4 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{ px: 2, py: 1 }}
-            >
-              Print
+            <Button type="submit" variant="contained" sx={{ px: 2, py: 1 }}>
+              Generate
             </Button>
           </Box>
         </form>

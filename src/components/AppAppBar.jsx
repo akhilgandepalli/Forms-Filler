@@ -64,7 +64,7 @@ export default function AppAppBar() {
   const handleLogoutClick = () => {
     setLoginStatus(false);
     handleAccountClose();
-    navigate("/login");
+    navigate("/");
   };
   const handleLoginClick = () => {
     handleAccountClose();
@@ -113,7 +113,7 @@ export default function AppAppBar() {
           <Box
             sx={{
               width: "50%",
-              display: "flex",
+              display: loginStatus ? "flex" : "none",
               justifyContent: "space-between",
               alignItems: "center",
             }}
@@ -176,13 +176,12 @@ export default function AppAppBar() {
                           handleMenuClose(`menu${num}`);
                           setCurrentCustomer(null);
                           if (
-                            option == "Modify Customer" ||
-                            option == "Delete Customer"
+                            option == "Modify Customer"
                           ) {
                             navigate(
                               `/customer/${option
                                 .toLowerCase()
-                                .replace(" ", "")}`
+                                .replace(" ", "")}/select`
                             );
                           } else {
                             navigate(

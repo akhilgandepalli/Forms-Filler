@@ -64,7 +64,7 @@ const DeleteCustomerPage = () => {
           gap: 2,
         }}
       >
-        <h3 style={{ margin: "16px 0 0 0" }}>Delete Customers</h3>
+        <h3 style={{ margin: "16px 0 0 0" }}>Delete Customer</h3>
         <SearchComponent obj={obj} />
         <TableContainer component={Paper} sx={{ width: 850 }}>
           <Table aria-label="simple table">

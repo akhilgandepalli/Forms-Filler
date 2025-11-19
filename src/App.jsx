@@ -14,6 +14,8 @@ import ViewCustomers from "./components/ViewCustomers.jsx";
 import ModifyCustomersPage from "./components/ModifyCustomersPage.jsx";
 import SearchComponent from "./components/SearchComponent.jsx";
 import DeleteCustomerPage from "./components/DeleteCustomerPage.jsx";
+import { StartingPage } from "./components/StartingPage.jsx";
+import GenerateForm from "./components/GenerateForm.jsx";
 
 export const appContext = createContext();
 
@@ -73,12 +75,12 @@ function App() {
             }}
           />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={loginStatus ? <Home /> : <StartingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/customer/createcustomer" element={<MainPage />} />
             <Route path="/customer/viewcustomers" element={<ViewCustomers />} />
             <Route
-              path="/customer/modifycustomer"
+              path="/customer/modifycustomer/:id"
               element={<ModifyCustomersPage />}
             />
             <Route
@@ -86,7 +88,8 @@ function App() {
               element={<DeleteCustomerPage />}
             />
 
-            <Route path="/forms/generateform" element={<FormsSelectMenu />} />
+            {/* <Route path="/forms/generateform" element={<FormsSelectMenu />} /> */}
+            <Route path="/forms/generateform" element={<GenerateForm />} />
             <Route path="*" element={<ErrorPage />} />
           </Routes>
         </BrowserRouter>

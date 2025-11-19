@@ -68,6 +68,7 @@ const sections = [
 
 const NewForm = ({ currentCustomer, setCurrentCustomer }) => {
   const { customers, setCustomers } = useContext(appContext);
+  const [custId, setCustId] = useState(0)
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
@@ -75,7 +76,6 @@ const NewForm = ({ currentCustomer, setCurrentCustomer }) => {
   const [isMainSectionValid, setIsMainSectionValid] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
 
-  const custId = 111;
   if (isEdit) {
     const customer = customers.find((e) => e.id === custId);
     setCurrentCustomer(customer);
@@ -312,9 +312,10 @@ const NewForm = ({ currentCustomer, setCurrentCustomer }) => {
       } else {
         const nextId =
           updatedCustomers.length > 0
-            ? updatedCustomers[updatedCustomers.length - 1].id + 1
-            : 1;
-        updatedCustomers.push({ ...data, id: nextId });
+            ? Number(updatedCustomers[updatedCustomers.length - 1].id) + 1
+            : 250001;
+        setCustId(nextId);
+        updatedCustomers.push({ ...data, id: String(nextId) });
       }
       return updatedCustomers;
     });
@@ -1080,6 +1081,48 @@ const NewForm = ({ currentCustomer, setCurrentCustomer }) => {
                             </MenuItem>
                           ))}
                         </TextField>
+                      )}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 4 }}>
+                    <Controller
+                      name={`dependant${depIndex}medicalAid`}
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          size="small"
+                          {...field}
+                          label="Medical Aid"
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 4 }}>
+                    <Controller
+                      name={`dependant${depIndex}medicalAidPlan`}
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          size="small"
+                          {...field}
+                          label="Medical Aid Plan"
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 4 }}>
+                    <Controller
+                      name={`dependant${depIndex}membershipNo`}
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          size="small"
+                          {...field}
+                          label="Membership No."
+                          fullWidth
+                        />
                       )}
                     />
                   </Grid>
@@ -2108,7 +2151,11 @@ const NewForm = ({ currentCustomer, setCurrentCustomer }) => {
           </Button>
         </Box>
         <AlertBar
-          message={currentCustomer ? "Customer Updated Successfully" :"Customer created successfully"}
+          message={
+            currentCustomer
+              ? "Customer updated successfully, Customer ID: "+currentCustomer?.id
+              : "Customer created successfully, Customer ID: "+custId
+          }
           openAlert={openAlert}
           setOpenAlert={setOpenAlert}
         />

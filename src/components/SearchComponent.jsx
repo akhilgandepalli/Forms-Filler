@@ -40,7 +40,7 @@ const SearchComponent = ({ obj }) => {
     [customers]
   );
   const displayQuery = useMemo(() => {
-    return currentCustomer?.firstName || query;
+    return currentCustomer?.id || "query";
   }, [currentCustomer, query]);
 
   const handleSearchChange = useCallback(
@@ -49,9 +49,9 @@ const SearchComponent = ({ obj }) => {
       setQuery(value);
       setCurrentCustomer(null);
 
-      if (value.length >= 2) {
+      if (value.length >= 1) {
         const results = customerNames.filter((item) =>
-          item?.name.toLowerCase().includes(value.toLowerCase())
+          item?.id.includes(value)
         );
         setFilteredResults(results);
         setShowResults(true);
@@ -89,10 +89,11 @@ const SearchComponent = ({ obj }) => {
     <Box sx={{ width: "25%", position: "relative" }}>
       <TextField
         fullWidth
-        label={"Select Customer"}
+        type="number"
+        label={"Search Customer"}
         value={displayQuery}
         onChange={handleSearchChange}
-        placeholder="Search..."
+        placeholder="Enter Customer ID"
         variant="outlined"
         InputProps={{
           endAdornment: (
@@ -120,12 +121,13 @@ const SearchComponent = ({ obj }) => {
             zIndex: 10,
             maxHeight: 200,
             overflowY: "auto",
+            display: showResults ? 'block' : 'none',
           }}
         >
           {filteredResults.length > 0 ? (
             filteredResults.map((item) => (
               <MenuItem key={item.id} onClick={() => handleItemClick(item)}>
-                {item.name}
+                {item.id}
               </MenuItem>
             ))
           ) : (

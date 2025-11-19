@@ -1,6 +1,6 @@
-import React, { use, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { appContext } from "../../App.jsx"; // Adjust the import path as necessary
+import { appContext } from "../../../App";
 import { usePDF } from "react-to-pdf";
 
 import {
@@ -18,6 +18,7 @@ import {
   Divider,
   Button,
   FormHelperText,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router";
 
@@ -35,7 +36,7 @@ const yesNoOptions = ["Yes", "No"];
 
 const genderOptions = ["Male", "Female"];
 
-const DiscoveryForm2 = () => {
+const HMSApplicationForm = () => {
   const { customers, setCustomers, currentCustomer, setCurrentCustomer } =
     useContext(appContext);
   const navigate = useNavigate();
@@ -270,15 +271,34 @@ const DiscoveryForm2 = () => {
         Id:&nbsp;
         {currentCustomer?.id ?? ""}
       </Typography>
-      <Typography variant="h5" gutterBottom textAlign="center">
-        Discovery Health Medical Scheme Application (2025)
+      <Typography
+        variant="h5"
+        gutterBottom
+        textAlign="center"
+        sx={{
+          background: "linear-gradient(90deg, #03d3b7ff, #03a5c5ff, #0330c5)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          fontWeight: "bold",
+        }}
+      >
+        Discovery Health Medical Scheme Application Form 2025
       </Typography>
+
+      <Alert severity="warning" sx={{ mb: 1 }}>
+        Please complete all required fields based on the instructions you're requesting.
+      </Alert>
+      <Divider sx={{ mb: 1 }} />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Section 1: Main Applicant */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
-            1. About yourself (main applicant)
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
+            1. About Yourself (main applicant)
           </Typography>
           <Grid container spacing={2}>
             <Grid size={{ xs: 6, sm: 3 }}>
@@ -565,8 +585,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 2: Spouse or Partner */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             2. About your spouse or partner (only complete if applying for
             cover)
           </Typography>
@@ -745,8 +769,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 3: Dependants */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             3. About your dependants (only complete if they are also applying
             for cover)
           </Typography>
@@ -953,8 +981,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 4: Financial adviser's details */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             4. Your financial adviser's details
           </Typography>
           <Grid container spacing={2}>
@@ -1124,8 +1156,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 5: Health Plan Selection */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             5. Please select your health plan
           </Typography>
           <Controller
@@ -1176,8 +1212,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 6: KeyCare Plan */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             6. If you choose a KeyCare plan
           </Typography>
           <Grid container spacing={2}>
@@ -1250,8 +1290,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 7: Employment Details */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             7. Your employment details
           </Typography>
           <Grid container spacing={2}>
@@ -1344,8 +1388,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 8: Banking Details */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             8. Your banking details
           </Typography>
           <Typography variant="subtitle2">8.1 Contributions</Typography>
@@ -1488,8 +1536,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 9: Previous Medical Scheme Details */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             9. Previous medical scheme details
           </Typography>
           <FormControl
@@ -1633,8 +1685,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 10: Moving from another scheme */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             10. Moving from another medical scheme
           </Typography>
           <Grid container spacing={2} justifyContent={"space-between"}>
@@ -1786,8 +1842,12 @@ const DiscoveryForm2 = () => {
         <Divider />
 
         {/* Section 11: Medical History Summary */}
-        <Box my={4}>
-          <Typography variant="h6" gutterBottom>
+        <Box my={2}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            sx={{ bgcolor: "#03a5c525", padding: "2px 4px", mb: 3 }}
+          >
             11. Health questions summary
           </Typography>
           {[1, 2, 3].map((index) => (
@@ -1911,4 +1971,4 @@ const DiscoveryForm2 = () => {
   );
 };
 
-export default DiscoveryForm2;
+export default HMSApplicationForm;

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useForm, Controller } from "react-hook-form";
-import html2pdf from "html2pdf.js";
+import { usePDF } from "react-to-pdf";
 import {
   Box,
   Button,
@@ -23,11 +23,37 @@ import {
   Alert,
   FormGroup,
 } from "@mui/material";
-import { appContext } from "../../App";
+import { appContext } from "../../../App";
+import { useNavigate } from "react-router";
 
 const StartumGapCoverClaimForm = () => {
   const { customers, currentCustomer, setCurrentCustomer } =
     useContext(appContext);
+    const navigate = useNavigate()
+  const { toPDF, targetRef } = usePDF({
+    filename:
+      "StratumGAPCoverClaimForm " +
+      currentCustomer?.firstName +
+      " " +
+      currentCustomer?.id +
+      ".pdf",
+    page: {
+      margin: 15, // margin in mm
+      format: "a4", // or 'letter', etc.
+      orientation: "landscape", // or 'portrait'
+    },
+    canvas: {
+      scale: 2, // higher scale improves quality
+    },
+    overrides: {
+      pdf: {
+        compress: true, // compress PDF
+      },
+      canvas: {
+        useCORS: true, // enable cross-origin images
+      },
+    },
+  });
   const {
     control,
     handleSubmit,
@@ -96,28 +122,37 @@ const StartumGapCoverClaimForm = () => {
   const patientIsPolicyholder = watch("patientIsPolicyholder");
   const bankAccountType = watch("bankAccountType");
 
-  const handlePrint = () => {
-    const element = document.getElementById("claimForm");
-    const formTitle = "Stratum Gap Cover Claim";
-    const customerName = `${currentCustomer.firstName} ${currentCustomer.id}`;
-    const fileName = `${formTitle} - ${customerName}.pdf`;
-    //console.log(element);
-    html2pdf(element, {
-      filename: fileName,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-    });
-  };
+  // const handlePrint = () => {
+  //   const element = document.getElementById("claimForm");
+  //   const formTitle = "Stratum Gap Cover Claim";
+  //   const customerName = `${currentCustomer.firstName} ${currentCustomer.id}`;
+  //   const fileName = `${formTitle} - ${customerName}.pdf`;
+  //   //console.log(element);
+  //   html2pdf(element, {
+  //     filename: fileName,
+  //     image: { type: "jpeg", quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+  //   });
+  // };
 
   const onSubmit = (data) => {
     console.log("Form Data:", data);
-    handlePrint();
+    toPDF();
+    navigate('/');
   };
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: "auto", p: "2px" }}>
+    <Box ref={targetRef} sx={{ maxWidth: 1200, mx: "auto", p: "2px" }}>
       <Paper id={"claimForm"} elevation={3} sx={{ p: 2 }}>
+        <Typography
+          variant="subtitle2"
+          gutterBottom
+          sx={{ position: "relative", top: 35, left: 5 }}
+        >
+          Id:&nbsp;
+          {currentCustomer?.id ?? ""}
+        </Typography>
         <Typography
           variant="h5"
           gutterBottom
@@ -552,6 +587,7 @@ const StartumGapCoverClaimForm = () => {
                     <Controller
                       name="medicalEventLocation"
                       control={control}
+                      required
                       rules={{ required: "Medical event location is required" }}
                       render={({ field }) => (
                         <RadioGroup {...field} row>
@@ -583,6 +619,11 @@ const StartumGapCoverClaimForm = () => {
                         </RadioGroup>
                       )}
                     />
+                    {errors.medicalEventLocation && (
+                      <Typography color="error" variant="caption">
+                        {errors.medicalEventLocation.message}
+                      </Typography>
+                    )}
                   </FormControl>
                 </Grid>
 
@@ -1045,7 +1086,7 @@ const StartumGapCoverClaimForm = () => {
               //size="large"
               sx={{ px: 2, py: 1.5 }}
             >
-              Print
+              Generate
             </Button>
           </Box>
         </form>

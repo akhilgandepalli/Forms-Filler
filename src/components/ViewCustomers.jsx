@@ -29,6 +29,10 @@ const ViewCustomers = () => {
     },
     [currentCustomer, setCurrentCustomer, setCustomers]
   );
+
+  const handleEditButton = useCallback((id) => {
+    navigate(`/customer/modifycustomer/${id}`);
+  });
   return (
     <Container maxWidth="xl" sx={{ padding: { xs: 0 } }}>
       <Box
@@ -85,7 +89,12 @@ const ViewCustomers = () => {
                   <TableCell align="right">{row.contactNumber}</TableCell>
                   <TableCell align="right">{row.idPassportNumber}</TableCell>
                   <TableCell align="right">
-                    <IconButton sx={{ p: 0 }}>
+                    <IconButton
+                      sx={{ p: 0 }}
+                      onClick={() => {
+                        handleEditButton(row.id);
+                      }}
+                    >
                       <EditIcon sx={{ p: "2px" }} />
                     </IconButton>
                   </TableCell>

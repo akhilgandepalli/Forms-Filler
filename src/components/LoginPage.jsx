@@ -33,7 +33,7 @@ const LoginPage = () => {
     <Container maxWidth="xl" sx={{ padding: { xs: 0 } }}>
       <Box
         sx={{
-          height: "87.5vh",
+          height: "86vh",
           backgroundColor: "#f3f3f3",
           backdropFilter: "blur(8px)",
           boxShadow: 1,
@@ -120,22 +120,44 @@ const LoginPage = () => {
                 />
               )}
             />
-
-            <Button
+            <Typography component={'a'}  textAlign={'center'} sx={{cursor:'pointer', '&:hover':{textDecorationLine:'underline'}}}>forgot password</Typography>
+            <Box sx={{display:'flex', justifyContent:'center', gap:4}}>
+              <Button
               variant="contained"
               color="primary"
-              fullWidth
               type="submit"
               sx={{
-                padding: "10px 0",
+                width:'100px',
+                padding: "4px",
                 fontSize: "1rem",
                 fontWeight: 500,
                 mt: 2,
                 bgcolor: "#0c3948",
+                textTransform:'capitalize'
               }}
             >
               Login
             </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              //type="submit"
+              sx={{
+                width:'100px',
+                padding: "4px",
+                fontSize: "1rem",
+                fontWeight: 500,
+                mt: 2,
+                bgcolor: "#0c3948",
+                textTransform:'capitalize'
+              }}
+            >
+              Register
+            </Button>
+
+            </Box>
+
+            
           </Box>
         </Box>
       </Box>

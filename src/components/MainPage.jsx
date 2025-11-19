@@ -2,8 +2,8 @@ import { Alert, Box, Container, Typography } from "@mui/material";
 import React from "react";
 import DiscoveryHMSForm from "./Forms/DiscoveryHMSForm";
 import DiscoveryForm2 from "./Forms/DiscoveryForm2";
-import StartumGapCoverClaimForm from "./Forms/StartumGapCoverClaimForm";
-import StartumGapCoverApplicationForm from "./Forms/StartumGapCoverApplicationForm";
+import StartumGapCoverClaimForm from "./Forms/StratumForms/StartumGapCoverClaimForm";
+import StartumGapCoverApplicationForm from "./Forms/StratumForms/StartumGapCoverApplicationForm";
 import NewForm from "./Forms/NewForm";
 
 const MainPage = () => {
